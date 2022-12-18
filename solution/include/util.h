@@ -14,10 +14,10 @@
 enum read_status  
 {
     READ_OK = 0,             /**< Нет ошибки */
-    READ_INVALID_SIGNATURE,  /**< Неизвестная сигнатура */
-    READ_INVALID_BITS,       /**< Неизвестные биты */
-    READ_INVALID_HEADER,     /**< Неверный заголовок */
-    READ_INVALID_VERSION,    /**< Неверная версия */
+    READ_INVALID_SIGNATURE,  /**< Неизвестная сигнатура файла*/
+    READ_INVALID_BITS,       /**< Неверная глубина цвета файла*/
+    READ_INVALID_HEADER,     /**< Неверный заголовок файла*/
+    READ_INVALID_VERSION,    /**< Неверная версия заголовка*/
     READ_UNEXPECTED_EOF,     /**< Неожиданный конец файла */
     READ_FILE_ERROR          /**< Ошибка чтения файла */
     /* коды других ошибок  */

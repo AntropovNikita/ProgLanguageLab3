@@ -4,13 +4,13 @@ enum open_status open_file(const char* path, FILE* fd, enum file_mode mode)
 {
     if (mode == FILE_READ_MODE) // Открытие в режиме чтения
     {
-        fd = fopen(path, 'r');
+        fd = fopen(path, 'rb');
         if (fd == NULL)
             return OPEN_READ_ERROR;
     }
     else if (mode == FILE_WRITE_MODE) // Открытие в режиме записи
     {
-        fd = fopen(path, 'w');
+        fd = fopen(path, 'wb');
         if (fd == NULL)
             return OPEN_WRITE_ERROR;
     }
