@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <stdio.h>
+#include <stdarg.h>
 
 
 /**
@@ -79,6 +80,12 @@ enum open_status open_file(const char* path, FILE* fd, enum file_mode mode);
  * @return Код ошибки закрытия файла
 */
 enum close_status close_file(FILE* fd);
+
+/**
+ * @brief Вывод сообщения об ошибке в stderr
+ * @param[in] msg Сообщение в stderr
+*/
+_Noreturn void err_output(const char* msg, ...);
 
 /**
  * @brief Проверка статуса открытия файла. 

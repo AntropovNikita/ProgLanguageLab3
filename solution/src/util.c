@@ -1,7 +1,4 @@
-#include <stdarg.h>
 #include "util.h"
-
-_Noreturn static void err(const char* msg, ...);
 
 enum open_status open_file(const char* path, FILE* fd, enum file_mode mode)
 {
@@ -37,7 +34,7 @@ void check_open_status(enum open_status status)
     };
     
     if(status != OPEN_OK)
-	    err("Ошибка: %s\n",messages[status]);
+	    err_output("Ошибка: %s\n",messages[status]);
 
     fprintf(stdout, "Вывод: %s\n", messages[status]);
 }
@@ -50,7 +47,7 @@ void check_close_status(enum close_status status)
     };
     
     if(status != CLOSE_OK)
-	    err("Ошибка: %s\n",messages[status]);
+	    err_output("Ошибка: %s\n",messages[status]);
 
     fprintf(stdout, "Вывод: %s\n", messages[status]);
 }
@@ -63,7 +60,7 @@ void check_write_status(enum write_status status)
     };
     
     if(status != WRITE_OK)
-	    err("Ошибка: %s\n",messages[status]);
+	    err_output("Ошибка: %s\n",messages[status]);
 
     fprintf(stdout, "Вывод: %s\n", messages[status]);
 }
@@ -81,12 +78,12 @@ void check_read_status(enum read_status status)
     };
     
     if(status != READ_OK)
-	    err("Ошибка: %s\n",messages[status]);
+	    err_output("Ошибка: %s\n",messages[status]);
 
     fprintf(stdout, "Вывод: %s\n", messages[status]);
 }
 
-_Noreturn static void err(const char* msg, ...)
+_Noreturn void err_output(const char* msg, ...)
 {
       va_list args;
       va_start (args, msg);
