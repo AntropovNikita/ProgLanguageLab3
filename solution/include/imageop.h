@@ -23,8 +23,8 @@ struct pixel
 */
 struct image
 {
-    uint64_t width;     /**< Ширина изображения */
-    uint64_t height;    /**< Высота изображения */
+    uint32_t width;     /**< Ширина изображения */
+    uint32_t height;    /**< Высота изображения */
     struct pixel* data; /**< Массив пикселей */
 };
 
