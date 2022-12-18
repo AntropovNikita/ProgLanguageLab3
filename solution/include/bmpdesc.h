@@ -5,6 +5,7 @@
 #include "imageop.h"
 #include "util.h"
 
+
 /**
  * @defgroup BMP Работа с расширением bmp
 */

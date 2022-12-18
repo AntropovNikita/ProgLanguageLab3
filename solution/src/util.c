@@ -1,5 +1,6 @@
 #include "util.h"
 
+
 enum open_status open_file(const char* path, FILE* fd, enum file_mode mode)
 {
     if (mode == FILE_READ_MODE) // Открытие в режиме чтения
@@ -23,4 +24,24 @@ enum close_status close_file(FILE* fd)
     if (fclose(fd) == EOF)
         return CLOSE_ERROR;
     return CLOSE_OK;
+}
+
+void check_open_status(enum open_status status)
+{
+
+}
+
+void check_close_status(enum close_status status)
+{
+
+}
+
+void check_write_status(enum write_status status)
+{
+
+}
+
+void check_read_status(enum read_status status)
+{
+    
 }

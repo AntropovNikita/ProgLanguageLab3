@@ -3,8 +3,9 @@
 
 #include <stdint.h>
 
+
 /**
- * @defgroup IMAGE Работа с изображением
+ * @defgroup IMAGE Внутренний формат изображения
 */
 /**@{*/
 

@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 
+
 /**
  * @defgroup UTIL Дополнительные функции
 */
@@ -78,6 +79,38 @@ enum open_status open_file(const char* path, FILE* fd, enum file_mode mode);
  * @return Код ошибки закрытия файла
 */
 enum close_status close_file(FILE* fd);
+
+/**
+ * @brief Проверка статуса открытия файла. 
+ *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
+ *        иначе вывод в stdout
+ * @param[in] status Статус открытия файла
+*/
+void check_open_status(enum open_status status);
+
+/**
+ * @brief Проверка статуса открытия файла. 
+ *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
+ *        иначе вывод в stdout
+ * @param[in] status Статус закрытия файла
+*/
+void check_close_status(enum close_status status);
+
+/**
+ * @brief Проверка статуса открытия файла. 
+ *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
+ *        иначе вывод в stdout
+ * @param[in] status Статус записи в файл
+*/
+void check_write_status(enum write_status status);
+
+/**
+ * @brief Проверка статуса открытия файла. 
+ *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
+ *        иначе вывод в stdout
+ * @param[in] status Статус чтения файла
+*/
+void check_read_status(enum read_status status);
 
 /**@}*/
 
