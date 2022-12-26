@@ -1,4 +1,3 @@
-#include "util.h"
 #include "bmpdesc.h"
 #include "transrot.h"
 

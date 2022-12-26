@@ -83,12 +83,6 @@ enum open_status open_file(const char* path, FILE** fd, enum file_mode mode);
 enum close_status close_file(FILE** fd);
 
 /**
- * @brief Вывод сообщения об ошибке в stderr
- * @param[in] msg Сообщение в stderr
-*/
-_Noreturn void err_output(const char* msg, ...);
-
-/**
  * @brief Проверка статуса открытия файла. 
  *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
  *        иначе вывод в stdout

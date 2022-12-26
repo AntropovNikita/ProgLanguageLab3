@@ -1,5 +1,11 @@
 #include "util.h"
 
+/**
+ * @brief Вывод сообщения об ошибке в stderr
+ * @param[in] msg Сообщение в stderr
+*/
+_Noreturn static void err_output(const char* msg, ...);
+
 enum open_status open_file(const char* path, FILE** fd, enum file_mode mode)
 {
     if (mode == FILE_READ_MODE) // Открытие в режиме чтения
@@ -74,7 +80,7 @@ void check_read_status(enum read_status status)
 	    [READ_INVALID_VERSION] = "Неподдерживаемая версия файла",
 	    [READ_UNEXPECTED_EOF] = "Неожиданный конец файла",
 	    [READ_FILE_ERROR] = "Не получилось прочесть данные из файла",
-	    [READ_OK] = "Данные успешно прочитанны из файла"
+	    [READ_OK] = "Данные успешно прочитаны из файла"
     };
     
     if(status != READ_OK)
@@ -83,7 +89,7 @@ void check_read_status(enum read_status status)
     fprintf(stderr, "Вывод: %s\n", messages[status]);
 }
 
-_Noreturn void err_output(const char* msg, ...)
+_Noreturn static void err_output(const char* msg, ...)
 {
       va_list args;
       va_start (args, msg);
