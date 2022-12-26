@@ -1,8 +1,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 /**
@@ -72,14 +73,14 @@ enum file_mode
  * @param[in] mode Режим открытия файла
  * @return Код ошибки открытия файла
 */
-enum open_status open_file(const char* path, FILE* fd, enum file_mode mode);
+enum open_status open_file(const char* path, FILE** fd, enum file_mode mode);
 
 /**
  * @brief Закрытия файла
  * @param[in] fd Указатель на дескриптор файла
  * @return Код ошибки закрытия файла
 */
-enum close_status close_file(FILE* fd);
+enum close_status close_file(FILE** fd);
 
 /**
  * @brief Вывод сообщения об ошибке в stderr

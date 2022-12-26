@@ -2,6 +2,7 @@
 #define TRANS_ROT_H
 
 #include "imageop.h"
+#include <stdlib.h>
 
 
 /**

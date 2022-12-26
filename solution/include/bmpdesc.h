@@ -1,9 +1,10 @@
 #ifndef BMP_DESC_H
 #define BMP_DESC_H
 
-#include <stdio.h>
 #include "imageop.h"
 #include "util.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 
 /**

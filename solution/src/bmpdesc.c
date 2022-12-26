@@ -45,8 +45,15 @@ static uint64_t read_bmp_header(FILE* fd, struct bmp_header* header);
 */
 static struct bmp_header gen_bmp_header(uint32_t height, uint32_t width);
 
+/**
+ * @brief Расчет кол-ва мусорных байт для отступа
+ * @param[in] width Ширина изображения
+ * @return Кол-во байт
+*/
+static uint32_t padding_size(uint32_t width);
+
 enum read_status from_bmp( FILE* in, struct image* img )
-{
+{ 
     struct bmp_header header = {0};
     if (read_bmp_header(in, &header) == 0) // Если не удалось прочитать заголовок
         return READ_INVALID_HEADER;
@@ -63,12 +70,14 @@ enum read_status from_bmp( FILE* in, struct image* img )
     img->width = header.biWidth;
     img->height = header.biHeight;
     const uint64_t img_size = img->height*img->width;
+    const uint32_t padding = padding_size(img->width);
 
     img->data = (struct pixel*) malloc(img_size*sizeof(struct pixel)); // Выделение памяти под массив пикселей
 
+    fseek(in, sizeof(struct bmp_header), SEEK_SET);
     for(uint32_t i=0; i < img->height; i++)
     {
-        if (fread(&(img->data[i*img->width]), sizeof(struct pixel), img->width, in) != img->width) // Если не удалось прочитать заданное кол-во байт
+        if (fread(&(img->data[i*img->width]), sizeof(struct pixel), img->width, in) < 1) // Если не удалось прочитать заданное кол-во байт
         {
             free(img->data); 
             if (feof(in)) // Если обнаружен конец файла
@@ -76,8 +85,8 @@ enum read_status from_bmp( FILE* in, struct image* img )
             return READ_FILE_ERROR;
         }
 
-        if (img->width*BMP_COLOR_COUNT % PADDING_COUNT != 0) // Пропуск байт padding
-            fseek(in, PADDING_COUNT - img->width*BMP_COLOR_COUNT % PADDING_COUNT, SEEK_CUR);
+        if (padding != 0) // Пропуск байт padding
+            fseek(in, PADDING_COUNT - padding, SEEK_CUR);
     }
     
     return READ_OK;
@@ -86,19 +95,20 @@ enum read_status from_bmp( FILE* in, struct image* img )
 enum write_status to_bmp( FILE* out, struct image const* img )
 {
     const uint8_t padding_byte = 0;
-
-    struct bmp_header header = gen_bmp_header(img->height, img->width);
+    const uint32_t padding = padding_size(img->width);
+    const struct bmp_header header = gen_bmp_header(img->height, img->width);
 
     if (fwrite(&header, sizeof(struct bmp_header), 1, out) == 0)
         return WRITE_ERROR;
 
+    fseek(out, sizeof(struct bmp_header), SEEK_SET);
     for(uint32_t i = 0; i < img->height; i++)
     {
-        if (fwrite(&(img->data[i*img->width]), sizeof(struct pixel), img->width, out) != img->width)
+        if (fwrite(&(img->data[i*img->width]), sizeof(struct pixel), img->width, out) < 1)
             return WRITE_ERROR;
 
-        if (img->width*BMP_COLOR_COUNT % PADDING_COUNT != 0) // Добавление байт padding
-            if (fwrite(&padding_byte, 1, 4 - img->width*BMP_COLOR_COUNT % PADDING_COUNT, out))
+        if (padding != 0) // Добавление байт padding
+            if (fwrite(&padding_byte, sizeof(uint8_t), PADDING_COUNT - padding, out) < 1)
                 return WRITE_ERROR;
     }
 
@@ -112,7 +122,7 @@ static uint64_t read_bmp_header(FILE* fd, struct bmp_header* header)
 
 static struct bmp_header gen_bmp_header(uint32_t height, uint32_t width)
 {
-    const uint32_t padding = PADDING_COUNT - width*BMP_COLOR_COUNT % PADDING_COUNT;
+    const uint32_t padding = padding_size(width);
 
     struct bmp_header header = {0};
     header.bfType = BMP_FILE_SIGNATURE;
@@ -127,4 +137,9 @@ static struct bmp_header gen_bmp_header(uint32_t height, uint32_t width)
     header.biSizeImage = height*(width*BMP_COLOR_COUNT + padding);
 
     return header;
+}
+
+static uint32_t padding_size(uint32_t width)
+{
+    return width*BMP_COLOR_COUNT % PADDING_COUNT;
 }
