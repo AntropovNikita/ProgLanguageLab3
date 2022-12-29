@@ -12,7 +12,7 @@
 /**
  * Струкура пикселя RGB изображения
 */
-struct pixel
+struct __attribute__((packed)) pixel
 {
     uint8_t b; /**< Синий канал */
     uint8_t g; /**< Зеленый канал */

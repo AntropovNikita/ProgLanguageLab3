@@ -22,7 +22,8 @@ enum read_status
     READ_INVALID_HEADER,     /**< Неверный заголовок файла*/
     READ_INVALID_VERSION,    /**< Неверная версия заголовка*/
     READ_UNEXPECTED_EOF,     /**< Неожиданный конец файла */
-    READ_FILE_ERROR          /**< Ошибка чтения файла */
+    READ_FILE_ERROR,         /**< Ошибка чтения файла */
+    READ_FILE_TOO_BIG        /**< Ошибка нехватки памяти */
     /* коды других ошибок  */
 };
     
@@ -67,6 +68,15 @@ enum file_mode
 };
 
 /**
+ * Перечисление для проверки наличия ошибки
+*/
+enum check_status
+{
+    ERROR_STATUS,   /**< Ошибка есть */
+    NO_ERROR_STATUS /**< Ошибки нет */
+};
+
+/**
  * @brief Открытие файла в заданном режиме
  * @param[in] path Путь до файла
  * @param[out] fd Указатель на дескриптор файла
@@ -83,36 +93,32 @@ enum open_status open_file(const char* path, FILE** fd, enum file_mode mode);
 enum close_status close_file(FILE** fd);
 
 /**
- * @brief Проверка статуса открытия файла. 
- *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
- *        иначе вывод в stdout
+ * @brief Проверка статуса открытия файла
  * @param[in] status Статус открытия файла
+ * @return Перечисление с индикатром наличия/отсутствия ошибки
 */
-void check_open_status(enum open_status status);
+enum check_status check_open_status(enum open_status status);
 
 /**
- * @brief Проверка статуса открытия файла. 
- *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
- *        иначе вывод в stdout
+ * @brief Проверка статуса закрытия файла
  * @param[in] status Статус закрытия файла
+ * @return Перечисление с индикатром наличия/отсутствия ошибки
 */
-void check_close_status(enum close_status status);
+enum check_status check_close_status(enum close_status status);
 
 /**
- * @brief Проверка статуса открытия файла. 
- *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
- *        иначе вывод в stdout
+ * @brief Проверка статуса записи файла
  * @param[in] status Статус записи в файл
+ * @return Перечисление с индикатром наличия/отсутствия ошибки
 */
-void check_write_status(enum write_status status);
+enum check_status check_write_status(enum write_status status);
 
 /**
- * @brief Проверка статуса открытия файла. 
- *        Если ошибка, то прекращение выполнения программы и вывод в stderr,
- *        иначе вывод в stdout
+ * @brief Проверка статуса чтения файла
  * @param[in] status Статус чтения файла
+ * @return Перечисление с индикатром наличия/отсутствия ошибки
 */
-void check_read_status(enum read_status status);
+enum check_status check_read_status(enum read_status status);
 
 /**@}*/
 

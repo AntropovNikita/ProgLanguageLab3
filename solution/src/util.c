@@ -4,7 +4,7 @@
  * @brief Вывод сообщения об ошибке в stderr
  * @param[in] msg Сообщение в stderr
 */
-_Noreturn static void err_output(const char* msg, ...);
+static void err_output(const char* msg, ...);
 
 enum open_status open_file(const char* path, FILE** fd, enum file_mode mode)
 {
@@ -31,7 +31,7 @@ enum close_status close_file(FILE** fd)
     return CLOSE_OK;
 }
 
-void check_open_status(enum open_status status)
+enum check_status check_open_status(enum open_status status)
 {
     static const char* const messages[] = {
         [OPEN_OK] = "Файл упешно открыт",
@@ -40,12 +40,16 @@ void check_open_status(enum open_status status)
     };
 
     if(status != OPEN_OK)
+    {
 	    err_output("Ошибка: %s\n",messages[status]);
+        return ERROR_STATUS;
+    }
 
-    fprintf(stderr, "Вывод: %s\n", messages[status]);
+    err_output("Вывод: %s\n", messages[status]);
+    return NO_ERROR_STATUS;
 }
 
-void check_close_status(enum close_status status)
+enum check_status check_close_status(enum close_status status)
 {
     static char const* const messages[] = {
         [CLOSE_OK] = "Файл упешно закрыт",
@@ -53,12 +57,16 @@ void check_close_status(enum close_status status)
     };
     
     if(status != CLOSE_OK)
+    {
 	    err_output("Ошибка: %s\n",messages[status]);
+        return ERROR_STATUS;
+    }
 
-    fprintf(stderr, "Вывод: %s\n", messages[status]);
+    err_output("Вывод: %s\n", messages[status]);
+    return NO_ERROR_STATUS;
 }
 
-void check_write_status(enum write_status status)
+enum check_status check_write_status(enum write_status status)
 {
     static char const* const messages[] = {
 	    [WRITE_ERROR] = "Не получилось записать данные в файл",
@@ -66,12 +74,16 @@ void check_write_status(enum write_status status)
     };
     
     if(status != WRITE_OK)
+    {
 	    err_output("Ошибка: %s\n",messages[status]);
+        return ERROR_STATUS;
+    }
 
-    fprintf(stderr, "Вывод: %s\n", messages[status]);
+    err_output("Вывод: %s\n", messages[status]);
+    return NO_ERROR_STATUS;
 }
 
-void check_read_status(enum read_status status)
+enum check_status check_read_status(enum read_status status)
 {
     static char const* const messages[] = {
 	    [READ_INVALID_BITS] = "Требуется глубина цвета - 24 бита",
@@ -80,20 +92,24 @@ void check_read_status(enum read_status status)
 	    [READ_INVALID_VERSION] = "Неподдерживаемая версия файла",
 	    [READ_UNEXPECTED_EOF] = "Неожиданный конец файла",
 	    [READ_FILE_ERROR] = "Не получилось прочесть данные из файла",
+        [READ_FILE_TOO_BIG] = "Файл слишком большой. Не хватает памяти",
 	    [READ_OK] = "Данные успешно прочитаны из файла"
     };
     
     if(status != READ_OK)
+    {
 	    err_output("Ошибка: %s\n",messages[status]);
+        return ERROR_STATUS;
+    }
 
-    fprintf(stderr, "Вывод: %s\n", messages[status]);
+    err_output("Вывод: %s\n", messages[status]);
+    return NO_ERROR_STATUS;
 }
 
-_Noreturn static void err_output(const char* msg, ...)
+static void err_output(const char* msg, ...)
 {
       va_list args;
       va_start (args, msg);
       vfprintf(stderr, msg, args);
       va_end (args);
-      exit(1);
 }

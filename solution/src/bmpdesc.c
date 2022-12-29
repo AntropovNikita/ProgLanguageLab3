@@ -56,7 +56,11 @@ enum read_status from_bmp( FILE* in, struct image* img )
 { 
     struct bmp_header header = {0};
     if (read_bmp_header(in, &header) == 0) // Если не удалось прочитать заголовок
+    {
+        if (feof(in))
+            return READ_UNEXPECTED_EOF;
         return READ_INVALID_HEADER;
+    }
 
     if (header.bfType != BMP_FILE_SIGNATURE) // Если не совпадает сигнатура с сигнатурой BMP
         return READ_INVALID_SIGNATURE;
@@ -73,20 +77,33 @@ enum read_status from_bmp( FILE* in, struct image* img )
     const uint32_t padding = padding_size(img->width);
 
     img->data = (struct pixel*) malloc(img_size*sizeof(struct pixel)); // Выделение памяти под массив пикселей
+    if (img->data == NULL)
+        return READ_FILE_TOO_BIG;
 
-    fseek(in, sizeof(struct bmp_header), SEEK_SET);
+    if (fseek(in, sizeof(struct bmp_header), SEEK_SET) != 0)
+    {
+        free(img->data);
+        return READ_FILE_ERROR;
+    }
+    
     for(uint32_t i=0; i < img->height; i++)
     {
-        if (fread(&(img->data[i*img->width]), sizeof(struct pixel), img->width, in) < 1) // Если не удалось прочитать заданное кол-во байт
+        if (fread(&(img->data[i*img->width]), sizeof(struct pixel), img->width, in) != img->width) // Если не удалось прочитать заданное кол-во байт
         {
             free(img->data); 
             if (feof(in)) // Если обнаружен конец файла
                 return READ_UNEXPECTED_EOF;
-            return READ_FILE_ERROR;
+            return READ_FILE_ERROR; // Если ошибка чтения
         }
 
         if (padding != 0) // Пропуск байт padding
-            fseek(in, PADDING_COUNT - padding, SEEK_CUR);
+        {
+            if (fseek(in, PADDING_COUNT - padding, SEEK_CUR) != 0)
+                {
+                    free(img->data);
+                    return READ_FILE_ERROR;
+                }
+        }
     }
     
     return READ_OK;
@@ -101,14 +118,16 @@ enum write_status to_bmp( FILE* out, struct image const* img )
     if (fwrite(&header, sizeof(struct bmp_header), 1, out) == 0)
         return WRITE_ERROR;
 
-    fseek(out, sizeof(struct bmp_header), SEEK_SET);
+    if (fseek(out, sizeof(struct bmp_header), SEEK_SET) != 0)
+        return WRITE_ERROR;
+    
     for(uint32_t i = 0; i < img->height; i++)
     {
-        if (fwrite(&(img->data[i*img->width]), sizeof(struct pixel), img->width, out) < 1)
+        if (fwrite(&(img->data[i*img->width]), sizeof(struct pixel), img->width, out) != img->width)
             return WRITE_ERROR;
 
         if (padding != 0) // Добавление байт padding
-            if (fwrite(&padding_byte, sizeof(uint8_t), PADDING_COUNT - padding, out) < 1)
+            if (fwrite(&padding_byte, sizeof(uint8_t), PADDING_COUNT - padding, out) != PADDING_COUNT - padding)
                 return WRITE_ERROR;
     }
 

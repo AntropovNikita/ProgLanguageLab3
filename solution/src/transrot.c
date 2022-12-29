@@ -47,6 +47,8 @@ static struct image rotate_left_90(struct image const source)
     };
 
     rot_img.data = (struct pixel*) malloc(rot_img.width*rot_img.height*sizeof(struct pixel));
+    if (rot_img.data == NULL) // Если не удалось выделить память возвращаем исходное изображение
+        return source;
 
     for(uint32_t i=0; i < rot_img.height; i++)
         for(uint32_t j=0; j < rot_img.width; j++)

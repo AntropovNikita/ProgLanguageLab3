@@ -31,7 +31,7 @@ enum rotate_grad
  * @param[in] source Исходное изображение
  * @param[in] side Сторона поворота изображения
  * @param[in] grad Угол поворота изображения
- * @return Копия изображения, повернутая на заданный градус
+ * @return Копия изображения, повернутая на заданный градус, или исходное изображение, если не хватило памяти
 */
 struct image rotate( struct image const source, enum rotate_side side, enum rotate_grad grad);
 
